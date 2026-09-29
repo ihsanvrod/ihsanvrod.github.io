@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createHashRouter } from "react-router";
 import Root from "./pages/Root";
 import People from "./pages/People";
 import Map from "./pages/Map";
@@ -10,7 +10,7 @@ import TrackingDetection from "./pages/TrackingDetection";
 import Auth from "./pages/Auth";
 import AppIcon from "./pages/AppIcon";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/",
     Component: Root,

@@ -186,7 +186,7 @@
     }
 
     /* ── Project Cards ───────────────────────── */
-    #projects { background: var(--surface); }
+    #projects { background: var(--bg); }
 
     .project-card {
       background: var(--surface-2);
@@ -260,110 +260,99 @@
       letter-spacing: 0.05em;
     }
 
-    /* ── APCSA Section ───────────────────────── */
-    #apcsa { background: var(--bg); }
+    /* ── Portfolio (card decks) ──────────────── */
+    #portfolio { background: var(--surface); }
 
-    .apcsa-placeholder {
-      border: 1px dashed var(--border);
-      border-radius: 8px;
-      padding: 3rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-    }
-
-    /* ── Gallery Section ─────────────────────── */
-    #gallery { background: var(--surface); }
-
-    .gallery-grid {
+    /* left: 1x2 portrait | right: 2x2 landscape. 2fr:9fr + 11:6 ratio = equal heights, no gaps */
+    .shoot-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: 220px;
-      gap: 0.75rem;
+      grid-template-columns: 2fr 9fr;
+      gap: 1.5rem;
+      aspect-ratio: 11 / 6;
     }
+    .shoot-left  { display: grid; grid-template-rows: 1fr 1fr; gap: 1.5rem; min-height: 0; }
+    .shoot-right { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1.5rem; min-height: 0; }
 
-    .gallery-item {
+    .deck {
       position: relative;
-      overflow: hidden;
-      border-radius: 8px;
-      border: 1px solid var(--border);
+      width: 100%; height: 100%;
+      padding: 0; border: 0; background: none;
       cursor: pointer;
+      color: inherit;
+      min-height: 0;
+    }
+    .deck-card {
+      position: absolute; inset: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1), filter 0.35s;
       background: var(--surface-2);
     }
+    .deck-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .deck-card.c3 { transform: rotate(-2.5deg); filter: brightness(0.4); }
+    .deck-card.c2 { transform: rotate(2deg);    filter: brightness(0.65); }
+    .deck-card.c1 { transform: rotate(0); }
 
-    .gallery-item.tall { grid-row: span 2; }
-    .gallery-item.wide { grid-column: span 2; }
+    .deck:hover .c3, .deck:focus-visible .c3 { transform: rotate(-8deg) translate(-14px, 4px); }
+    .deck:hover .c2, .deck:focus-visible .c2 { transform: rotate(6deg)  translate(14px, 2px); }
+    .deck:hover .c1, .deck:focus-visible .c1 { transform: translateY(-5px); border-color: rgba(0,229,160,0.45); }
+    .deck:focus-visible { outline: none; }
 
-    .gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.4s ease, filter 0.4s ease;
-      filter: saturate(0.9) brightness(0.92);
+    .deck-label {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      padding: 2rem 0.9rem 0.75rem;
+      text-align: left;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.8));
+      border-radius: 0 0 8px 8px;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
     }
-
-    .gallery-item:hover img {
-      transform: scale(1.06);
-      filter: saturate(1.05) brightness(1);
-    }
-
-    .gallery-item-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: flex-end;
-      padding: 0.9rem;
-      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.75) 100%);
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-
-    .gallery-item:hover .gallery-item-overlay { opacity: 1; }
-
-    .gallery-item-caption {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      color: #e8edf2;
-      letter-spacing: 0.02em;
+    .deck:hover .deck-label { transform: translateY(-5px); }
+    .deck-label b { display: block; font-size: 0.9rem; font-weight: 700; }
+    .deck-label span {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      color: var(--accent); letter-spacing: 0.08em;
     }
 
     @media (max-width: 768px) {
-      .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: 180px;
-      }
+      .shoot-grid { aspect-ratio: auto; grid-template-columns: 1fr; }
+      .shoot-left { grid-template-rows: none; grid-template-columns: 1fr 1fr; }
+      .shoot-left .deck { aspect-ratio: 2 / 3; height: auto; }
+      .shoot-right { grid-template-columns: 1fr; grid-template-rows: none; }
+      .shoot-right .deck { aspect-ratio: 3 / 2; height: auto; }
     }
 
-    #lightboxModal .modal-content {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
+    #shootModal .modal-content { background: var(--surface-2); border: 1px solid var(--border); }
+    #shootModal .modal-header, #shootModal .modal-footer { border-color: var(--border); }
+    #shootModal .modal-title { font-weight: 800; letter-spacing: -0.01em; }
+    #shootModal .modal-sub {
+      font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
     }
-
-    #lightboxModal .modal-body {
-      padding: 0;
+    #shootModal .btn-close { filter: invert(1); opacity: 0.7; }
+    #shootModal .modal-body img {
+      width: 100%; display: block; border-radius: 6px;
+      margin-bottom: 1rem; background: #000;
     }
+    #shootModal .modal-body img:last-child { margin-bottom: 0; }
 
-    #lightboxModal img {
+    /* ── App (Figma Make prototype) ──────────── */
+    #app { background: var(--surface); }
+
+    .phone-frame {
       width: 100%;
-      max-height: 82vh;
-      object-fit: contain;
+      max-width: 390px;
+      margin: 0 auto;
+      aspect-ratio: 390 / 800;
+      border: 10px solid #05080b;
+      border-radius: 44px;
       background: #000;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border), 0 24px 60px rgba(0,0,0,0.55), 0 0 80px rgba(0,229,160,0.06);
     }
-
-    #lightboxModal .modal-caption {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      padding: 0.9rem 1.1rem;
-      border-top: 1px solid var(--border);
-    }
-
-    #lightboxModal .btn-close {
-      filter: invert(1);
-      opacity: 0.7;
-    }
+    .phone-frame iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
 
     /* ── Resume / College / Contact ──────────── */
     #more { background: var(--bg); }
@@ -422,9 +411,9 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navMenu">
         <ul class="navbar-nav gap-2">
+          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
           <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
-          <li class="nav-item"><a class="nav-link" href="#apcsa">APCSA</a></li>
+          <li class="nav-item"><a class="nav-link" href="#app">App</a></li>
           <li class="nav-item"><a class="nav-link" href="#more">Contact</a></li>
           <li class="nav-item ms-2">
             <a href="https://github.com/ihsanrodriguez" target="_blank" class="btn btn-ghost btn-sm">GitHub ↗</a>
@@ -446,12 +435,45 @@
         Building things on the web, one commit at a time.
       </p>
       <div class="d-flex flex-wrap gap-3">
-        <a href="#projects" class="btn btn-accent">View Projects</a>
+        <a href="#portfolio" class="btn btn-accent">View Portfolio</a>
         <a href="#more" class="btn btn-ghost">Get in Touch</a>
       </div>
     </div>
     <div class="scroll-hint">↓ scroll</div>
   </section>
+
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-label">// photography</div>
+      <h2 class="section-title">Portfolio</h2>
+      <div class="section-divider"></div>
+
+      <div class="shoot-grid fade-up">
+        <div class="shoot-left" id="portraitDecks"></div>
+        <div class="shoot-right" id="landscapeDecks"></div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="https://www.dropbox.com/your-folder-link" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">See All ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Photoshoot modal -->
+  <div class="modal fade" id="shootModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <div class="modal-sub" id="shootSub"></div>
+            <h5 class="modal-title" id="shootTitle"></h5>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="shootPhotos"></div>
+      </div>
+    </div>
+  </div>
 
   <section id="projects">
     <div class="container">
@@ -483,73 +505,25 @@
     </div>
   </section>
 
-  <section id="gallery">
+  <section id="app">
     <div class="container">
-      <div class="section-label">// portfolio</div>
-      <h2 class="section-title">Gallery</h2>
+      <div class="section-label">// app</div>
+      <h2 class="section-title">QuietSafe</h2>
       <div class="section-divider"></div>
 
-      <div class="text-center mb-4 fade-up">
-        <a href="https://www.dropbox.com/your-folder-link" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">See All ↗</a>
-      </div>
-
-      <div class="gallery-grid fade-up">
-        <div class="gallery-item wide tall" data-full="images/IMG_5298.JPG" data-caption="Photo title — details">
-          <img src="images/IMG_5298.JPG" alt="Photo 1" loading="lazy">
-          <div class="gallery-item-overlay"><span class="gallery-item-caption">Photo title</span></div>
+      <div class="row align-items-center g-5">
+        <div class="col-lg-5 fade-up">
+          <p style="color: var(--text-muted); line-height:1.7;">
+            An app I designed in Figma and built with Figma Make. It's live and clickable
+            right here, so tap around inside the phone.
+          </p>
+          <a href="quietsafe/index.html" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Open full screen ↗</a>
         </div>
-        <div class="gallery-item" data-full="images/IMG_6249.JPG" data-caption="Photo title — details">
-          <img src="images/IMG_6249.JPG" alt="Photo 2" loading="lazy">
-          <div class="gallery-item-overlay"><span class="gallery-item-caption">Photo title</span></div>
+        <div class="col-lg-7 fade-up">
+          <div class="phone-frame">
+            <iframe src="quietsafe/index.html" title="QuietSafe app" loading="lazy"></iframe>
+          </div>
         </div>
-        <div class="gallery-item" data-full="images/IMG_6859.JPG" data-caption="Photo title — details">
-          <img src="images/IMG_6859.JPG" alt="Photo 3" loading="lazy">
-          <div class="gallery-item-overlay"><span class="gallery-item-caption">Photo title</span></div>
-        </div>
-        <div class="gallery-item tall" data-full="images/IMG_6999.JPG" data-caption="Photo title — details">
-          <img src="images/IMG_6999.JPG" alt="Photo 4" loading="lazy">
-          <div class="gallery-item-overlay"><span class="gallery-item-caption">Photo title</span></div>
-        </div>
-        <div class="gallery-item" data-full="images/IMG_7303.JPG" data-caption="Photo title — details">
-          <img src="images/IMG_7303.JPG" alt="Photo 5" loading="lazy">
-          <div class="gallery-item-overlay"><span class="gallery-item-caption">Photo title</span></div>
-        </div>
-        <div class="gallery-item wide" data-full="images/IMG_7445.JPG" data-caption="Photo title — details">
-          <img src="images/IMG_7445.JPG" alt="Photo 6" loading="lazy">
-          <div class="gallery-item-overlay"><span class="gallery-item-caption">Photo title</span></div>
-        </div>
-        <div class="gallery-item" data-full="images/IMG_7446.JPG" data-caption="Photo title — details">
-          <img src="images/IMG_7446.JPG" alt="Photo 7" loading="lazy">
-          <div class="gallery-item-overlay"><span class="gallery-item-caption">Photo title</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Lightbox modal -->
-  <div class="modal fade" id="lightboxModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="d-flex justify-content-end p-2">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <img id="lightboxImg" src="" alt="">
-        </div>
-        <div class="modal-caption" id="lightboxCaption"></div>
-      </div>
-    </div>
-  </div>
-
-  <section id="apcsa">
-    <div class="container">
-      <div class="section-label">// coursework</div>
-      <h2 class="section-title">AP Computer Science A</h2>
-      <div class="section-divider"></div>
-
-      <div class="apcsa-placeholder fade-up">
-        <div style="font-size:2rem; margin-bottom:1rem; opacity:.3">{ }</div>
-        <div>APCSA labs, notes, and learning milestones — coming soon.</div>
       </div>
     </div>
   </section>
@@ -615,20 +589,53 @@
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // Gallery lightbox
-    const lightboxModalEl = document.getElementById('lightboxModal');
-    const lightboxModal = new bootstrap.Modal(lightboxModalEl);
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxCaption = document.getElementById('lightboxCaption');
+    // ── Photoshoots ──────────────────────────────
+    // cover  = best photo of the shoot (top of the deck)
+    // photos = every photo in the shoot (shown when the deck is opened)
+    // pos    = optional crop focus for the cover (CSS object-position)
+    const W = n => `images/web/${n}.JPG`;
+    const C = n => `images/cover/${n}.JPG`;
 
-    document.querySelectorAll('.gallery-item').forEach(item => {
-      item.addEventListener('click', () => {
-        lightboxImg.src = item.dataset.full;
-        lightboxImg.alt = item.dataset.caption || '';
-        lightboxCaption.textContent = item.dataset.caption || '';
-        lightboxModal.show();
+    const portraitShoots = [
+      { title: 'Photoshoot 1', sub: 'Portrait', cover: C('IMG_7445'), pos: '50% 50%',
+        photos: ['IMG_7445','IMG_7446','IMG_7477'].map(W) },
+      { title: 'Photoshoot 2', sub: 'Portrait', cover: C('IMG_6249'), pos: '52% 50%',
+        photos: ['IMG_6249','IMG_5298'].map(W) }
+    ];
+
+    const landscapeShoots = [
+      { title: 'Photoshoot 3', sub: 'Landscape', cover: C('IMG_6859'), photos: ['IMG_6859'].map(W) },
+      { title: 'Photoshoot 4', sub: 'Landscape', cover: C('IMG_6999'), photos: ['IMG_6999'].map(W) },
+      { title: 'Photoshoot 5', sub: 'Landscape', cover: C('IMG_7303'), photos: ['IMG_7303'].map(W) },
+      { title: 'Photoshoot 6', sub: 'Landscape', cover: C('IMG_7446'), photos: ['IMG_7446','IMG_7477'].map(W) }
+    ];
+
+    const shootModalEl = document.getElementById('shootModal');
+    const shootModal = new bootstrap.Modal(shootModalEl);
+
+    function makeDeck(shoot) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'deck';
+      btn.setAttribute('aria-label', 'Open ' + shoot.title);
+      const img = `<img src="${shoot.cover}" alt="${shoot.title}" loading="lazy" style="object-position:${shoot.pos || '50% 50%'}">`;
+      btn.innerHTML =
+        `<div class="deck-card c3">${img}</div>
+         <div class="deck-card c2">${img}</div>
+         <div class="deck-card c1">${img}</div>
+         <div class="deck-label"><b>${shoot.title}</b><span>${shoot.photos.length} photo${shoot.photos.length > 1 ? 's' : ''} →</span></div>`;
+      btn.addEventListener('click', () => {
+        document.getElementById('shootTitle').textContent = shoot.title;
+        document.getElementById('shootSub').textContent = '// ' + shoot.sub.toLowerCase();
+        document.getElementById('shootPhotos').innerHTML =
+          shoot.photos.map(p => `<img src="${p}" alt="${shoot.title}" loading="lazy">`).join('');
+        shootModal.show();
       });
-    });
+      return btn;
+    }
+
+    portraitShoots.forEach(s => document.getElementById('portraitDecks').appendChild(makeDeck(s)));
+    landscapeShoots.forEach(s => document.getElementById('landscapeDecks').appendChild(makeDeck(s)));
   </script>
 
 </body>
