@@ -1,0 +1,49 @@
+name: Build app and deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build QuietSafe app
+        working-directory: "Enable opening feature (Copy)"
+        run: |
+          npm install --legacy-peer-deps
+          npm install --no-save react@18.3.1 react-dom@18.3.1
+          npm run build
+
+      - name: Put built app at /quietsafe
+        run: |
+          mkdir -p quietsafe
+          cp -r "Enable opening feature (Copy)/dist/." quietsafe/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
