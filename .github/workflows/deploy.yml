@@ -31,7 +31,8 @@ jobs:
         working-directory: "Enable opening feature (Copy)"
         run: |
           npm install --legacy-peer-deps
-             npm install --no-save --legacy-peer-deps react@19 react-dom@19
+          npm install --legacy-peer-deps --save react@19 react-dom@19
+          npm ls react || true
           npm run build
 
       - name: Put built app at /quietsafe
